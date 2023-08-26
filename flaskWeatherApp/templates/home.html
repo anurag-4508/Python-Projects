@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+                    <section class="vh-100">
+                      <div class="container  h-100">
+
+                        <div class="row d-flex justify-content-center align-items-center h-100">
+                          <div class="col-md-8 col-lg-6 col-xl-4">
+
+                            <h3 class="mb-4 pb-2 fw-normal">Check the weather forecast</h3>
+
+                            <form action="/" method="POST">
+                                <div class="input-group rounded mb-3">
+                                  <input type="search" name="search" class="form-control rounded" placeholder="City" aria-label="Search"
+                                    aria-describedby="search-addon" />
+                                  <button  type="submit" name="search_btn">
+                                    <span class="input-group-text " id="search-addon" >
+                                      Check!
+                                    </span>
+                                  </button>
+                                </div>
+                            </form>
+
+
+
+                            <div class="card shadow-0 border">
+                              <div class="card-body p-4">
+
+                                <h4 class="mb-1 sfw-normal">{{ result["location"]["name"] }}</h4>
+                                <p class="mb-2">Current temperature: <strong>{{ result["current"]["temperature"] }}°C</strong></p>
+                                <p>Feels like: <strong>{{ result["current"]["feelslike"] }}°C</strong></p>
+                                <p>Humidity: <strong>{{ result["current"]["humidity"] }}</strong></p>
+                                <p>Precipitation: <strong>{{ result["current"]["precip"] }}</strong></p>
+                                <p>Visibility: <strong>{{ result["current"]["visibility"] }} km</strong></p>
+
+                                <div class="d-flex flex-row align-items-center">
+                                  <p class="mb-0 me-4">Scattered Clouds</p>
+                                  <i class="fas fa-cloud fa-3x" style="color: #eee;"></i>
+                                </div>
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </section>
+
+{% endblock content %}

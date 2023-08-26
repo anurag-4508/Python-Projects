@@ -1,0 +1,11 @@
+body{
+    background-image: url("clouds.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.card-body{
+    background-image: linear-gradient(to right, #ffefba, #ffffff);
+
+
+}

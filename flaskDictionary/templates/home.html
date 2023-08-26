@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+ {% block content %}
+                <h5 class="card-title">Word: <span id="word">{{ word| capitalize}}</span></h5>
+                <p class="card-text" id="meaning">Meaning of the selected word will be displayed here.</p>
+                 {% for meaning in result[0]["meanings"][0]["definitions"] %}
+                    <p class="card-text meaning"  id="meaning">🔵 {{ meaning["definition"] }}</p>
+                 {% endfor %}
+{% endblock content %}

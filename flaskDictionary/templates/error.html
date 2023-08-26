@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+ {% block content %}
+                <h5 class="card-title">Word: <span id="word">{{ word | capitalize}}</span></h5>
+                <h5 class="card-title">No meaning found</h5>
+                <p class="card-text" id="meaning">Meaning of the selected word is not available in our database.
+                Please try to search correct word</p>
+
+{% endblock content %}

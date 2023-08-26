@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="container mt-5">
+        <div class="card">
+
+            <div class="card-header">
+                <h2>Update Room {{ room.name }}</h2>
+            </div>
+
+            <div class="card-header">
+                <h2>{{ message }}</h2>
+            </div>
+
+            <div class="card-body">
+                <form  method="POST">
+                    <div class="form-group">
+                        <label for="roomName">Room Name:</label>
+                        <input type="text" class="form-control" id="roomName" placeholder="Update room name" name="room_name" value="{{ room.name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="roomMembers">Room Members:</label>
+                        <input type="text" class="form-control" id="roomMembers" placeholder="Update room members" name="members" value="{{ room_members_str }}">
+                        <small class="form-text text-muted">Enter member names separated by commas.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Room</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

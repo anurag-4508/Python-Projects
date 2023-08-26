@@ -1,0 +1,46 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>Room Creation</title>#}
+{#    <!-- Include Bootstrap CSS -->#}
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">#}
+{#</head>#}
+{#<body>#}
+
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="container mt-5">
+        <div class="card">
+
+            <div class="card-header">
+                <h2>Create a New Room</h2>
+            </div>
+
+
+            <div class="card-body">
+                <form action="/create_room" method="POST">
+                    <div class="form-group">
+                        <label for="roomName">Room Name:</label>
+                        <input type="text" class="form-control" id="roomName" placeholder="Enter room name" name="room_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="roomMembers">Room Members:</label>
+                        <input type="text" class="form-control" id="roomMembers" placeholder="Enter room members" name="members">
+                        <small class="form-text text-muted">Enter member names separated by commas.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Room</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+{#    <!-- Include Bootstrap JS and jQuery -->#}
+{#    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>#}
+{#    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>#}
+{#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>#}
+{#</body>#}
+{#</html>#}

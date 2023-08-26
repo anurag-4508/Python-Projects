@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="container mt-5">
+      <div class="card">
+          <div class="card-header">
+              <h2 class="text-center">Join a Chatroom</h2>
+          </div>
+
+          <div class="card-header">
+                  <h5>Hii
+                      <span class="display_username">
+                      {% if current_user.is_authenticated %}
+                          {{ current_user.username |capitalize }}
+                      {% else %}
+                          Guest user
+                      {% endif %}
+                      </span>
+                  </h5>
+          </div>
+
+          <div class="card-body">
+              {% if current_user.is_authenticated == false %}
+                  You are not logged in.
+                  Please click <a href="{{ url_for('login') }}">here</a> to login and create new chat rooms and join exsiting one's
+              {% else %}
+                  <span>Below are your chat rooms. You can also create new chat room</span>
+                  <ul>
+                  {% if rooms is not none %}
+                      {% for room in rooms %}
+                          <li> <a href="/rooms/{{ room._id.room_id }}"> {{ room.room_name }}</a></li>
+                      {% endfor %}
+                  {% else %}
+                      No rooms present to chat with.
+                      Create one by clicking <a href="{{ url_for('create_room') }}">here</a>
+                  {% endif %}
+                  </ul>
+
+              {% endif %}
+
+
+
+          </div>
+      </div>
+    </div>
+
+{% endblock content %}

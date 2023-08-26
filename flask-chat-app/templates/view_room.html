@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}My Flask App{% endblock %}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css') }}">
+    <style>
+        /* Additional custom styles can be added here */
+        .chat-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+        }
+        .message {
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .sender {
+            font-weight: bold;
+        }
+        .time {
+            font-size: 12px;
+            color: #888;
+        }
+        .input-container {
+            display: flex;
+            margin-top: 20px;
+        }
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .send-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+<style>
+    /* Your existing styles */
+
+        .chat-container {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 100vh; /* Set the container to take full viewport height */
+    }
+
+    .message-list {
+        flex: 1;
+        overflow-y: auto; /* Add a scrollbar when the content exceeds the height */
+        padding-right: 10px; /* Create space for scrollbar without affecting layout */
+        max-height: calc(100vh - 100px); /* Adjust to leave space for the input container */
+    }
+
+    /* Customize the scrollbar */
+    .message-list::-webkit-scrollbar {
+        width: 8px; /* Width of the scrollbar */
+    }
+
+    .message-list::-webkit-scrollbar-thumb {
+        background-color: #888; /* Color of the scrollbar thumb */
+        border-radius: 4px; /* Rounded corners for the thumb */
+    }
+
+    .message-list::-webkit-scrollbar-track {
+        background-color: #f2f2f2; /* Color of the scrollbar track */
+    }
+
+
+    /* Rest of your styles */
+</style>
+
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Flask Chat App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+            </li>
+
+          <li class="nav-item">
+              {% if current_user.is_authenticated %}
+                  <a class="nav-link" href="{{ url_for('create_room') }}">New Chat</a>
+              {% else %}
+                  <a class="nav-link" href="{{ url_for('signup') }}">SignUp</a>
+              {% endif %}
+          </li>
+
+        <li class="nav-item">
+         {% if current_user.is_authenticated %}
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout <span class="logout_username_display">{{ current_user.username | capitalize }}</span></a>
+          {% else %}
+              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+
+    <h1>Welcome to chat room {{ room.name }}</h1>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-12">
+
+                {% with messages =get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category,message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+
+{#             <div id="messages">#}
+{#                 {% for message in messages %}#}
+{#                     <div><b>{{ message.sender |capitalize }} [{{ message.created_at }}]: </b> {{ message.text }}</div>#}
+{#                 {% endfor %}#}
+{#             </div>#}
+{#            <div class="card">#}
+{#                <form id="message_input_form">#}
+{#                    <input type="text" id="message_input" placeholder="Enter your message here"/>#}
+{#                    <button type="submit">Send</button>#}
+{#                </form>#}
+{#                <ul>#}
+{#                    {% for member in room_members %}#}
+{#                        <li>{{ member._id.username }}</li>#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#            </div>#}
+                 <div class="container chat-container">
+                        <div class="message-list">
+                            {% for message in messages %}
+                                <div class="message">
+                                    <div class="sender">{{ message.sender | capitalize }}</div>
+                                    <div class="message-text">{{ message.text }}</div>
+                                    <div class="time">{{ message.created_at }}</div>
+                                </div>
+                            {% endfor %}
+                            <div class="message" id="message"></div>
+                        </div>
+
+                        <div class="input-container">
+                            <form id="message_input_form">
+                                <input type="text" class="form-control message-input" placeholder="Type your message" id="message_input">
+                                <button class="send-button" type="submit">Send</button>
+                            </form>
+                        </div>
+                 </div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js" integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    const socket = io.connect('http://127.0.0.1:5000')
+    socket.on('connect',function () {
+        socket.emit('join_room',{
+          username:"{{ username }}",
+          room:"{{ room._id }}"
+        });
+
+
+        document.getElementById('message_input_form').onsubmit = function (e) {
+
+            let message_input = document.getElementById('message_input')
+            let message = message_input.value.trim()
+
+            e.preventDefault()
+            if (message.length){
+                socket.emit('send_message', {
+                    username: "{{ username }}",
+                    room : "{{ room._id }}",
+                    message: message
+                })
+            }
+            message_input.value = '';
+            message_input.focus();
+        }
+
+
+    })
+
+    window.onbeforeunload = function () {
+        socket.emit('leave_room',{
+            username:"{{ username }}",
+            room:"{{ room._id }}"
+        })
+    }
+
+    socket.on('receive_message',function (data) {
+        console.log(data)
+        const sender = document.createElement('div')
+        sender.classList.add('sender')
+        const message_text = document.createElement('div')
+        message_text.classList.add('message-text')
+        const time = document.createElement('div')
+        time.classList.add('time')
+
+
+        let cap_username = data.username.charAt(0).toUpperCase() + data.username.slice(1);
+        sender.innerHTML = `${cap_username}`;
+        message_text.innerHTML = `${data.message}`;
+        time.innerHTML = `${data.created_at}`;
+        document.getElementById('message').appendChild(sender).appendChild(message_text).appendChild(time)
+
+    })
+
+    socket.on('join_room_announcement',function (data) {
+        console.log(data)
+        const newNode = document.createElement('div')
+        newNode.innerHTML = `<b>${data.username}</b> has joined the room`;
+        document.getElementById('messages').appendChild(newNode)
+
+    })
+
+     socket.on('leave_room_announcement',function (data) {
+        console.log(data)
+        const newNode = document.createElement('div')
+        newNode.innerHTML = `<b>${data.username}</b> has left the room`;
+        document.getElementById('messages').appendChild(newNode)
+
+    })
+
+</script>
+
+<script>
+
+    function scrollToBottom() {
+        let messageBody = document.querySelector('.message-list');
+        messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+    }
+    window.addEventListener('load', scrollToBottom);
+
+</script>
+
+
+</html>

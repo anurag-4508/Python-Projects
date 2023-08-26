@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}My Flask App{% endblock %}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css') }}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Flask Chat App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+        </li>
+
+        <li class="nav-item">
+          {% if current_user.is_authenticated %}
+            <a class="nav-link" href="{{ url_for('create_room') }}">New Chat</a>
+          {% else %}
+              <a class="nav-link" href="{{ url_for('signup') }}">SignUp</a>
+          {% endif %}
+        </li>
+        <li class="nav-item">
+          {% if current_user.is_authenticated %}
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout <span class="logout_username_display">{{ current_user.username | capitalize }}</span></a>
+          {% else %}
+              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-12">
+
+                {% with messages =get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category,message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+{#{% if active_page == 'chat' %}#}
+{#    <script>#}
+{#        const socket = io.connect('http://127.0.0.1:5000')#}
+{#        socket.on('connect',function () {#}
+{#            socket.emit('join_room',{#}
+{#              username:"{{ username }}",#}
+{#              room:"{{ room }}"#}
+{#            });#}
+{##}
+{##}
+{#            document.getElementById('message_input_form').onsubmit = function (e) {#}
+{##}
+{#                let message_input = document.getElementById('message_input')#}
+{#                let message = message_input.value.trim()#}
+{##}
+{#                e.preventDefault()#}
+{#                if (message.length){#}
+{#                    socket.emit('send_message', {#}
+{#                        username: "{{ username }}",#}
+{#                        room : "{{ room }}",#}
+{#                        message: message#}
+{#                    })#}
+{#                }#}
+{#                message_input.value = '';#}
+{#                message_input.focus();#}
+{#            }#}
+{##}
+{##}
+{#        })#}
+{##}
+{#        socket.on('receive_message',function (data) {#}
+{#            console.log(data)#}
+{#            const newNode = document.createElement('div')#}
+{#            newNode.innerHTML = `<b>${data.username}: </b> ${data.message}`;#}
+{#            document.getElementById('messages').appendChild(newNode)#}
+{##}
+{#        })#}
+{##}
+{#        socket.on('join_room_announcement',function (data) {#}
+{#            console.log(data)#}
+{#            const newNode = document.createElement('div')#}
+{#            newNode.innerHTML = `<b>${data.username}</b> has joined the room`;#}
+{#            document.getElementById('messages').appendChild(newNode)#}
+{##}
+{#        })#}
+{##}
+{#    </script>#}
+{#    #}
+{#{% endif %}#}
+
+</html>
